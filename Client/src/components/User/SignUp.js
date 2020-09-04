@@ -1,7 +1,6 @@
 //注册页面
 import React, { Component } from 'react';
 import { Form, Button, Input } from 'antd';
-import instance from '../../conf/axiosConf'
 import Axios from 'axios'
 
 const { Item } = Form;
@@ -28,16 +27,13 @@ export class SignUp extends Component {
         Axios.post("api/user/signUp", registerInfo)
             .then(res => res.json())
             .catch(error => console.error('Error:', error))
-            .then(value => console.log(value));
-        // fetch("api/user/signUp", {
-        //     method: "POST",
-        //     body: JSON.stringify(registerInfo),
-        //     headers: new Headers({
-        //         'Content-Type': 'application/json'
-        //     })
-        // }).then(res => res.json())
-        // .catch(error => console.error('Error:', error))
-        // .then(value => console.log(value))
+            .then(value => {
+                if (!value.success) {
+                    
+                } else {
+                    
+                }
+            });
     }
 
     render() {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Blog.Models;
 using Newtonsoft.Json;
 using System.Text.Json;
+using Blog.Common;
 
 namespace Blog.Controllers
 {
@@ -19,11 +20,10 @@ namespace Blog.Controllers
         }
 
         /// <summary>
-        /// 注册
+        /// 注册接口
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <param name="nickname"></param>
+        /// <param name="signUpInfor"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/User/SignUp")]
         public ActionResult SignUp([FromBody] SignUpInfor signUpInfor)
@@ -40,6 +40,7 @@ namespace Blog.Controllers
             byte[] hashBytes = new System.Security.Cryptography.SHA256Managed().ComputeHash(passwordAndSaltBytes);
             string hashString = Convert.ToBase64String(hashBytes);
             user.PasswordHash = hashString;
+
             _blogDataContext.Add(user);
             try
             {
@@ -47,11 +48,14 @@ namespace Blog.Controllers
             }
             catch
             {
-                throw;
+                return Ok(Result.Fail("注册失败"));
             }
-            return Ok();
+            return Ok(Result.Success());
         }
 
+        /// <summary>
+        /// 用于储存传递的注册信息
+        /// </summary>
         public class SignUpInfor
         {
             public string Username { get; set; }
