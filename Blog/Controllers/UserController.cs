@@ -83,7 +83,8 @@ namespace Blog.Controllers
                     HttpContext.Session.SetInt32("userId", user.Id);
                     return Ok(Result.Success(new
                     {
-                        Name = user.Nickname ?? user.Username
+                        Name = user.Nickname ?? user.Username,
+                        UserId = user.Id
                     }));
                 }
             }

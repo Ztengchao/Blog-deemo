@@ -1,6 +1,6 @@
 //注册页面
 import React, { Component } from 'react';
-import { Form, Button, Input, Alert } from 'antd';
+import { Form, Button, Input, Alert, message } from 'antd';
 import Axios from 'axios'
 
 const { Item } = Form;
@@ -16,11 +16,6 @@ export class SignUp extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            displayAlert: false,
-            registerSuccess: true,
-            message: ""
-        }
     }
 
     register = registerInfo => {
@@ -32,25 +27,17 @@ export class SignUp extends Component {
             .catch(error => console.error('Error:', error))
             .then(value => {
                 if (!value.success) {
-                    this.setState({ displayAlert: true, registerSuccess: false, message: value.message })
+                    message.error("注册失败：" + value.message);
                 } else {
-                    this.setState({ displayAlert: true, registerSuccess: true, message: "注册成功" })
+                    message.success("注册成功");
                 }
             });
     }
-
-    closeAlert = () => this.setState({ displayAlert: false })
 
     render() {
         return (
             <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
                 <Form wrapperCol={{ span: 16 }} labelCol={{ span: 4 }} style={{ width: "60%", }} name="register" onFinish={this.register} validateMessages={validateMessage}>
-                    {this.state.displayAlert ? <Alert
-                        message={this.state.message}
-                        type={this.state.registerSuccess ? "success" : "error"}
-                        onClose={this.closeAlert}
-                        closable></Alert> : <span></span>}
-
                     <Item label="登录用户名" name="username" rules={[{
                         required: true
                     }, {

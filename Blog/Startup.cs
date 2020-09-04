@@ -39,6 +39,7 @@ namespace Blog
                         .AllowCredentials());
             });
 
+            services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
                 //设置session过期时间为15min
@@ -60,6 +61,8 @@ namespace Blog
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseCors("any");
 
