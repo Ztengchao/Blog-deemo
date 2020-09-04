@@ -1,6 +1,8 @@
 //登录页面
 import React, { Component } from 'react';
-import { Form, Button, Input } from 'antd';
+import { Form, Button, Input,Alert } from 'antd';
+import Axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const { Item } = Form;
 
@@ -14,10 +16,40 @@ const validateMessage = {
 
 export class SignIn extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            displayAlert: false,
+            message: ""
+        }
+    }
+
+    login = loginInfo => {
+        Axios.post("api/user/signIn", loginInfo)
+            .then(res => {
+                return res.data;
+            })
+            .catch(error => console.error('Error:', error))
+            .then(value => {
+                if (!value.success) {
+                    this.setState({ displayAlert: true, message: value.message })
+                } else {
+                    this.props.history.push("/")
+                }
+            });
+    }
+
+    closeAlert = () => this.setState({ displayAlert: false })
+
     render() {
         return (
             <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
-                <Form wrapperCol={{ span: 16 }} labelCol={{ span: 4 }} style={{ width: "60%", }} name="register" onFinish={value => console.log(value)} validateMessages={validateMessage}>
+                <Form wrapperCol={{ span: 16 }} labelCol={{ span: 4 }} style={{ width: "60%", }} name="register" onFinish={this.login} validateMessages={validateMessage}>
+                    {this.state.displayAlert ? <Alert
+                        message={this.state.message}
+                        type={"error"}
+                        onClose={this.closeAlert}
+                        closable></Alert> : <span></span>}
                     <Item label="登录用户名" name="username" rules={[{
                         required: true
                     }, {

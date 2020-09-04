@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Blog.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,14 @@ namespace Blog
                         .AllowCredentials());
             });
 
+            services.AddSession(options =>
+            {
+                //设置session过期时间为15min
+                options.IdleTimeout = TimeSpan.FromMinutes(15);
+                options.Cookie.HttpOnly = false;
+                options.Cookie.Name = "Blog.Session";
+                options.Cookie.SameSite = SameSiteMode.None;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

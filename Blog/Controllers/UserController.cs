@@ -7,6 +7,7 @@ using Blog.Models;
 using Newtonsoft.Json;
 using System.Text.Json;
 using Blog.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace Blog.Controllers
 {
@@ -41,6 +42,11 @@ namespace Blog.Controllers
             string hashString = Convert.ToBase64String(hashBytes);
             user.PasswordHash = hashString;
 
+            if (_blogDataContext.User.FirstOrDefault(i => i.Username == user.Username) != null)
+            {
+                return Ok(Result.Fail("该用户已存在"));
+            }
+
             _blogDataContext.Add(user);
             try
             {
@@ -61,6 +67,34 @@ namespace Blog.Controllers
             public string Username { get; set; }
             public string Password { get; set; }
             public string Nickname { get; set; }
+        }
+
+        [HttpPost]
+        [Route("api/User/SignIn")]
+        public ActionResult SignIn([FromBody] SignInInfor signInInfor)
+        {
+            var user = _blogDataContext.User.FirstOrDefault(i => i.Username == signInInfor.Username);
+            if (user != null)
+            {
+                byte[] passwordAndSaltBytes = System.Text.Encoding.UTF8.GetBytes(signInInfor.Password + user.Salt.ToString());
+                byte[] hashBytes = new System.Security.Cryptography.SHA256Managed().ComputeHash(passwordAndSaltBytes);
+                if (Convert.ToBase64String(hashBytes) == user.PasswordHash.Trim())
+                {
+                    HttpContext.Session.SetInt32("userId", user.Id);
+                    return Ok(Result.Success(new
+                    {
+                        Name = user.Nickname ?? user.Username
+                    }));
+                }
+            }
+
+            return Ok(Result.Fail("用户名或密码错误"));
+        }
+
+        public class SignInInfor
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
         }
     }
 }

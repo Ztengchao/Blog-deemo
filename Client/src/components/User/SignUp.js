@@ -24,16 +24,13 @@ export class SignUp extends Component {
     }
 
     register = registerInfo => {
-        console.log(registerInfo);
         //发送数据到后台
         Axios.post("api/user/signUp", registerInfo)
             .then(res => {
-                console.log(res);
                 return res.data;
             })
             .catch(error => console.error('Error:', error))
             .then(value => {
-                console.log(value);
                 if (!value.success) {
                     this.setState({ displayAlert: true, registerSuccess: false, message: value.message })
                 } else {
