@@ -69,6 +69,11 @@ namespace Blog.Controllers
             public string Nickname { get; set; }
         }
 
+        /// <summary>
+        /// 登录接口
+        /// </summary>
+        /// <param name="signInInfor"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/User/SignIn")]
         public ActionResult SignIn([FromBody] SignInInfor signInInfor)
@@ -96,6 +101,18 @@ namespace Blog.Controllers
         {
             public string Username { get; set; }
             public string Password { get; set; }
+        }
+
+        /// <summary>
+        /// 登出
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/User/Logout")]
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(Result.Success());
         }
     }
 }

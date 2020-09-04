@@ -1,6 +1,6 @@
 //登录页面
 import React, { Component } from 'react';
-import { Form, Button, Input, Alert, message } from 'antd';
+import { Form, Button, Input, message } from 'antd';
 import Axios from 'axios';
 import cookie from 'react-cookies'
 
@@ -30,16 +30,18 @@ export class SignIn extends Component {
             .catch(error => console.error('Error:', error))
             .then(value => {
                 if (!value.success) {
-                    message.error("登录失败："+value.message);
+                    message.error("登录失败：" + value.message);
                 } else {
                     message.success('登录成功');
-                    cookie.save('account', value.data);
+                    const expires = new Date();
+                    expires.setDate(Date.now() + 1000 * 60 * 60);
+                    cookie.save('account', value.data, {
+                        expires: expires
+                    });
                     this.props.history.replace("/");
                 }
             });
     }
-
-    closeAlert = () => this.setState({ displayAlert: false })
 
     render() {
         return (

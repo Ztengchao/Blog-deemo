@@ -1,7 +1,8 @@
 //注册页面
 import React, { Component } from 'react';
-import { Form, Button, Input, Alert, message } from 'antd';
-import Axios from 'axios'
+import { Form, Button, Input,  message } from 'antd';
+import Axios from 'axios';
+import cookie from 'react-cookies';
 
 const { Item } = Form;
 
@@ -16,6 +17,9 @@ export class SignUp extends Component {
 
     constructor(props) {
         super(props);
+        if (cookie.load("account") != undefined) {
+            props.history.replace("/");
+        }
     }
 
     register = registerInfo => {

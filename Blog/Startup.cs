@@ -43,7 +43,7 @@ namespace Blog
             services.AddSession(options =>
             {
                 //设置session过期时间为15min
-                options.IdleTimeout = TimeSpan.FromMinutes(15);
+                options.IdleTimeout = TimeSpan.FromHours(1);
                 options.Cookie.HttpOnly = false;
                 options.Cookie.Name = "Blog.Session";
                 options.Cookie.SameSite = SameSiteMode.None;
