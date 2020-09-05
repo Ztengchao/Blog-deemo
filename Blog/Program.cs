@@ -14,16 +14,18 @@ namespace Blog
     {
         public static void Main(string[] args)
         {
+            Configuration = new ConfigurationBuilder().SetBasePath(Environment.CurrentDirectory)
+                                 .AddJsonFile("appsettings.json")
+                                 .Build();
             CreateHostBuilder(args).Build().Run();
         }
 
+        public static IConfigurationRoot Configuration { get; private set; }
+
         public static IWebHostBuilder CreateHostBuilder(string[] args)
         {
-            var configuration = new ConfigurationBuilder().SetBasePath(Environment.CurrentDirectory)
-                                        .AddJsonFile("appsettings.json")
-                                        .Build();
             return WebHost.CreateDefaultBuilder(args)
-                .UseUrls(configuration["url"])
+                .UseUrls(Configuration["url"])
                 .UseStartup<Startup>();
         }
     }

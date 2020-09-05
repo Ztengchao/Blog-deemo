@@ -17,7 +17,7 @@ export class SignUp extends Component {
 
     constructor(props) {
         super(props);
-        if (cookie.load("account") != undefined) {
+        if (cookie.load("userInfo") != undefined) {
             props.history.replace("/");
         }
     }

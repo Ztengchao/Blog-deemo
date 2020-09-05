@@ -17,7 +17,7 @@ export class SignIn extends Component {
 
     constructor(props) {
         super(props);
-        if (cookie.load("account") != undefined) {
+        if (cookie.load("userInfo") != undefined) {
             props.history.replace("/");
         }
     }
@@ -35,7 +35,7 @@ export class SignIn extends Component {
                     message.success('登录成功');
                     const expires = new Date();
                     expires.setDate(Date.now() + 1000 * 60 * 60);
-                    cookie.save('account', value.data, {
+                    cookie.save('userInfo', value.data, {
                         expires: expires
                     });
                     this.props.history.replace("/");

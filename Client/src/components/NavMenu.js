@@ -30,7 +30,7 @@ export class NavMenu extends Component {
     logout = () => {
         Axios.get("api/user/logout")
             .catch(err => console.log(err));
-        cookie.remove("account");
+        cookie.remove("userInfo");
         this.setState(this.state);
     }
 
@@ -44,7 +44,7 @@ export class NavMenu extends Component {
                         <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
                         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                             {
-                                cookie.load("account") == undefined ?
+                                cookie.load("userInfo") == undefined ?
                                     <ul className="navbar-nav flex-grow">
                                         <NavItem>
                                             <NavLink tag={Link} className="text-dark" to="/SignUp">注册</NavLink>
@@ -55,7 +55,7 @@ export class NavMenu extends Component {
                                     </ul> :
                                     <ul className="navbar-nav flex-grow">
                                         <NavItem>
-                                            <NavLink tag={Link} className="text-dark" to="/Profile">{cookie.load("account").name}</NavLink>
+                                            <NavLink tag={Link} className="text-dark" to="/Profile">{cookie.load("userInfo").name}</NavLink>
                                         </NavItem>
                                         <NavItem>
                                             <Button onClick={this.logout.bind(this)}>登出</Button>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Models;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -42,7 +44,7 @@ namespace Blog
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                //设置session过期时间为15min
+                //设置session过期时间为1h
                 options.IdleTimeout = TimeSpan.FromHours(1);
                 options.Cookie.HttpOnly = false;
                 options.Cookie.Name = "Blog.Session";
@@ -71,6 +73,12 @@ namespace Blog
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "api/{controller}/{action=Index}/{id?}");
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Program.Configuration["imgLocation"]),
+                RequestPath = new PathString("/api/img")
             });
         }
     }
