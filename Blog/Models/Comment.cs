@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Blog.Models
 {
@@ -17,9 +18,13 @@ namespace Blog.Models
         public DateTime DeliverDate { get; set; }
         public int? CommentId { get; set; }
 
+        [JsonIgnore]
         public virtual Article Article { get; set; }
+        [JsonIgnore]
         public virtual Comment CommentNavigation { get; set; }
+        [JsonIgnore]
         public virtual User User { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Comment> InverseCommentNavigation { get; set; }
     }
 }

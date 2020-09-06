@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Blog.Models
 {
@@ -19,8 +20,11 @@ namespace Blog.Models
         public int CommitCount { get; set; }
         public string Content { get; set; }
 
+        [JsonIgnore]
         public virtual User User { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Comment> Comment { get; set; }
+        [JsonIgnore]
         public virtual ICollection<StarArticle> StarArticle { get; set; }
     }
 }

@@ -12,7 +12,6 @@ namespace Blog.Controllers
     [ApiController]
     public class ArticleController : ControllerBase
     {
-
         private readonly BlogDataContext _blogDataContext;
         public ArticleController(BlogDataContext blogDataContext)
         {
