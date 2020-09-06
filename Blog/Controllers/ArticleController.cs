@@ -26,7 +26,7 @@ namespace Blog.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/article/getArticleByDate")]
-        public ActionResult GetArticleByDate(int index, int count)
+        public ActionResult GetArticleByDate(int index, int count, string searchTitle = "")
         {
             var totalCount = _blogDataContext.Article.Count();
             if (index >= totalCount)
@@ -35,6 +35,7 @@ namespace Blog.Controllers
             }
             var articles = _blogDataContext.Article
                 .OrderByDescending(i => i.Id)
+                .Where(i => i.Title.Contains(searchTitle))
                 .Skip(index)
                 .Take(count)
                 .ToArray();

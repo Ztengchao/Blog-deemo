@@ -34,13 +34,19 @@ export class NavMenu extends Component {
         this.setState(this.state);
     }
 
+    onSearch = value => {
+        document.getElementById("searchLink").click();
+    }
+
     render() {
         return (
             <header>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
                     <Container>
                         <NavbarBrand tag={Link} to="/">Blog</NavbarBrand>
-                        <Search style={{ width: "20%" }} onSearch={value => console.log(value)} ></Search>
+                        <Search id="searchInput" style={{ width: "40%" }} onSearch={this.onSearch.bind(this)} >
+                        </Search>
+                        <Link id="searchLink" to={"/Search"}></Link>
                         <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
                         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                             {

@@ -1,14 +1,26 @@
 import React, { Component } from 'react';
-import { message, Card } from 'antd';
-import Axios from 'axios';
 import { MyInfiniteScroll } from './Data/MyInfiniteScroll';
+import Axios from 'axios';
+import { Card } from 'antd';
 
-export class Index extends Component {
-    componentDidMount() {
+export class Search extends Component {
+
+    constructor(props) {
+        super(props);
+        let title = document.getElementById("searchInput").value;
+        if (!title) {
+            props.history.replace("/");
+        }
+
+        this.state = {
+            title: title,
+            data: [],
+        }
     }
 
+
     requestData = (callback, that) => {
-        Axios.get("api/article/getArticleByDate?index=" + that.state.index + "&count=6")
+        Axios.get("api/article/getArticleByDate?index=" + that.state.index + "&count=6&searchTitle=" + this.state.title)
             .then(res => {
                 if (!res.data.success) {
                     that.setState({
@@ -23,19 +35,11 @@ export class Index extends Component {
             .catch(err => console.log(err));
     }
 
-    writeArticle = () => {
-        this.props.history.push({
-            pathname: "/Editor",
-            query: {
-            }
-        });
-    }
-
     render() {
         return (
             <MyInfiniteScroll
                 loadData={this.requestData}
-                header="最新投稿"
+                header={"\"" + this.state.title + "\" 搜索结果"}
                 renderItem={
                     item => {
                         return (
