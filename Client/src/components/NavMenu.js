@@ -35,6 +35,7 @@ export class NavMenu extends Component {
     }
 
     onSearch = value => {
+        //TODO 修改搜索的bug
         document.getElementById("searchLink").click();
     }
 

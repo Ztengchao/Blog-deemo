@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { message, Card } from 'antd';
+import { Card } from 'antd';
 import Axios from 'axios';
 import { MyInfiniteScroll } from './Data/MyInfiniteScroll';
 
@@ -47,7 +47,10 @@ export class Index extends Component {
                                     marginTop: "20px"
                                 }}
                                 onClick={e => {
-                                    this.props.history.push("./editor");
+                                    this.props.history.push({
+                                        pathname: "/Article",
+                                        state: item,
+                                    });
                                 }}
                             >
                                 {item.content.replace(/<.*?>/ig, "").substring(0, 200)}
