@@ -1,28 +1,53 @@
-import React, { PureComponent, Fragment } from 'react';
-import { Spin } from 'antd'
+import React, { PureComponent } from 'react';
+import { Spin, Input, Button, message } from 'antd'
 // 引入ckeditor5插件
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import MyImgUploadAdapter from './MyImgUploadAdapter';
 // 引入中文包
 import '@ckeditor/ckeditor5-build-decoupled-document/build/translations/zh-cn';
+import Axios from 'axios';
 export class Editor extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
+            data: "输入正文",
+            title: "请输入标题",
+            articleId: 0,
         }
         this.editor = {};
     }
 
     componentDidMount() {
         // 接受传入的初始内容
-        let { value = "" } = this.props;
+        let { value = "输入正文" } = this.props;
+
+        if (this.props.location.query != undefined) {
+            this.setState({ articleId: this.props.location.query.articleId || 0 });
+        }
         this.init(value);
     }
 
-    init(init_value) {
+    saveArticle = () => {
+        let data = {
+            title: this.state.title,
+            content: this.state.data,
+            id: this.state.articleId,
+        };
+        Axios.post("api/article/EditArticle", data)
+            .then(res => {
+                if (res.data.success) {
 
-        DecoupledEditor.builtinPlugins.map(plugin => console.log(plugin.pluginName));
+                } else {
+                    message.error("保存失败：" + res.data.message);
+                }
+            })
+            .catch(err => {
+                message.error("保存失败：" + err);
+            });
+    }
+
+    init(init_value) {
 
         // 初始化组件
         DecoupledEditor
@@ -33,7 +58,7 @@ export class Editor extends PureComponent {
                     language: 'zh-cn',
                     // 设置初始值
                     initialData: init_value,
-                    
+
                 }
             )
             .then(editor => {
@@ -48,12 +73,10 @@ export class Editor extends PureComponent {
                     return new MyImgUploadAdapter(loader);
                 };
 
-
                 this.editor = editor;
-                // 内容变更时触发，获取内容，因为我是写完直接下一步的。
                 editor.model.document.on('change:data', (e) => {
-                    let richText = editor.getData();
-                    console.log(richText);
+                    let data = editor.getData();
+                    this.setState({ data });
                 })
             })
             .catch(error => {
@@ -67,14 +90,20 @@ export class Editor extends PureComponent {
         })
     }
 
+    titleOnChange = e => {
+        let title = e.target.value;
+        this.setState({ title });
+    }
+
     render() {
         return (
             <Spin spinning={this.state.loading}>
-                <div >
-                    <div id="toolbar-container" ></div>
-                    <div id="editor" >
-                        <p>请输入文本内容...</p>
+                <div>
+                    <Input maxLength={70} onChange={this.titleOnChange.bind(this)} style={{ fontSize: "26px", fontWeight: "bold" }} defaultValue={this.state.title}></Input>
+                    <div style={{ marginTop: "20px" }} id="toolbar-container" ></div>
+                    <div id="editor" style={{ marginTop: "20px", overflowY: "auto", height: "400px" }}>
                     </div>
+                    <Button onClick={this.saveArticle.bind(this)} type="primary" style={{ marginBottom: "10%", marginTop: "20px" }} >保存</Button>
                 </div>
             </Spin>
         )

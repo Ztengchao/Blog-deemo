@@ -33,11 +33,7 @@ export class SignIn extends Component {
                     message.error("登录失败：" + value.message);
                 } else {
                     message.success('登录成功');
-                    const expires = new Date();
-                    expires.setDate(Date.now() + 1000 * 60 * 60);
-                    cookie.save('userInfo', value.data, {
-                        expires: expires
-                    });
+                    cookie.save('userInfo', value.data);
                     this.props.history.replace("/");
                 }
             });

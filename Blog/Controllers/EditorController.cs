@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Blog.Common;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace Blog.Controllers
 {
