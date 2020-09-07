@@ -62,6 +62,9 @@ export class NavMenu extends Component {
                                     </ul> :
                                     <ul className="navbar-nav flex-grow">
                                         <NavItem>
+                                            <NavLink tag={Link} className="text-dark" to="/MyArticle">我的文章</NavLink>
+                                        </NavItem>
+                                        <NavItem>
                                             <NavLink tag={Link} className="text-dark" to="/Profile">{cookie.load("userInfo").name}</NavLink>
                                         </NavItem>
                                         <NavItem>

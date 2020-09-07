@@ -20,12 +20,20 @@ export class Editor extends PureComponent {
 
     componentDidMount() {
         // 接受传入的初始内容
-        let { value = "输入正文" } = this.props;
-
-        if (this.props.location.query != undefined) {
-            this.setState({ articleId: this.props.location.query.articleId || 0 });
+        let { data, title, articleId } = this.state;
+        if (this.props.location.state != undefined) {
+            data = this.props.location.state.content;
+            title = this.props.location.state.title;
+            articleId = this.props.location.state.id;
         }
-        this.init(value);
+
+        this.setState({
+            title,
+            data,
+            articleId,
+        });
+
+        this.init(data);
     }
 
     saveArticle = () => {

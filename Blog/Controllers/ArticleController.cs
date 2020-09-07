@@ -25,17 +25,23 @@ namespace Blog.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/article/getArticleByDate")]
-        public ActionResult GetArticleByDate(int index, int count, string searchTitle = "")
+        public ActionResult GetArticleByDate(int index, int count, string searchTitle = "", int userId = 0)
         {
             var totalCount = _blogDataContext.Article.Count();
             if (index >= totalCount)
             {
                 return Ok(Result.Fail("已经加载到末尾"));
             }
+
             var articles = _blogDataContext.Article
                 .OrderByDescending(i => i.Id)
-                .Where(i => i.Title.Contains(searchTitle))
-                .Skip(index)
+                .Where(i => i.Title.Contains(searchTitle));
+            if (userId != 0)
+            {
+                articles = articles.Where(i => i.UserId == userId);
+            }
+
+            var data = articles.Skip(index)
                 .Take(count)
                 .Select(i => new
                 {
@@ -43,7 +49,7 @@ namespace Blog.Controllers
                     Author = i.User,
                 })
                 .ToArray();
-            return Ok(Result.Success(articles));
+            return Ok(Result.Success(data));
         }
 
         [HttpPost]
@@ -56,10 +62,10 @@ namespace Blog.Controllers
                 return Ok(Result.Fail("登录信息已过期，请重新登录"));
             }
 
+            article.UserId = userId.Value;
             if (article.Id == 0)
             {
                 //id为-1是添加文章
-                article.UserId = userId.Value;
                 article.DeliverTime = DateTime.Now;
                 _blogDataContext.Add(article);
             }

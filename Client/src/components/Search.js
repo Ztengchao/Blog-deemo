@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { MyInfiniteScroll } from './Data/MyInfiniteScroll';
 import Axios from 'axios';
+import { Link } from 'react-router-dom';
 import { Card, Space, Avatar, Divider } from 'antd';
 import moment from 'moment';
 
@@ -60,24 +61,21 @@ export class Search extends Component {
                         return (
                             <Card hoverable
                                 title={
-                                    item.article.title
+                                    <Link to={{
+                                        pathname: "/Article",
+                                        state: item.article,
+                                    }} >
+                                        {item.article.title}
+                                    </Link>
                                 }
                                 style={{
                                     marginTop: "20px"
                                 }}
-                                onClick={e => {
-                                    this.props.history.push({
-                                        pathname: "/Article",
-                                        state: item.article,
-                                    });
-                                }}
                             >
                                 <Space>
+                                    <Avatar size="large" shape="square" src={item.author.profilePhoto} />
                                     <div>
-                                        <Avatar size="large" shape="square" src={item.author.profilePhoto} />
-                                        <div>
-                                            {item.article.content.replace(/<.*?>/ig, "").substring(0, 200)}
-                                        </div>
+                                        {item.article.content.replace(/<.*?>/ig, "").substring(0, 200)}
                                     </div>
                                 </Space>
                                 <Divider />

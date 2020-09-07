@@ -7,6 +7,7 @@ import { Editor } from './components/CKEditor/Editor';
 import { Index } from './components/Index';
 import { Search } from './components/Search';
 import { Article } from './components/Article';
+import { MyArticle } from './components/MyArticle';
 
 export default class App extends Component {
     static displayName = App.name;
@@ -20,6 +21,7 @@ export default class App extends Component {
                 <Route exact path="/" component={Index} />
                 <Route exact path="/Search" component={Search} />
                 <Route exact path="/Article" component={Article} />
+                <Route exact path='/MyArticle' component={MyArticle}/>
             </Layout>
         );
     }
