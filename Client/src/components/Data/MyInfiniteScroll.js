@@ -63,7 +63,7 @@ export class MyInfiniteScroll extends Component {
                                 <Button type="primary" style={{ width: "50px", height: "50px" }} shape="circle"
                                     icon={
                                         <EditOutlined style={{ width: "2em", height: "2em" }} />
-                                    } onClick={this.writeArticle} />
+                                    } onClick={this.props.writeArticle} />
                             </Tooltip>
                         </div>
                     ) : <span></span>

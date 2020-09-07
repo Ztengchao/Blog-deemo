@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Card } from 'antd';
+import { Card, Avatar, Space, Divider } from 'antd';
 import Axios from 'axios';
 import { MyInfiniteScroll } from './Data/MyInfiniteScroll';
+import moment from 'moment';
 
 export class Index extends Component {
     componentDidMount() {
@@ -34,6 +35,7 @@ export class Index extends Component {
     render() {
         return (
             <MyInfiniteScroll
+                writeArticle={this.writeArticle}
                 loadData={this.requestData}
                 header="最新投稿"
                 renderItem={
@@ -41,7 +43,7 @@ export class Index extends Component {
                         return (
                             <Card hoverable
                                 title={
-                                    item.title
+                                    item.article.title
                                 }
                                 style={{
                                     marginTop: "20px"
@@ -49,11 +51,27 @@ export class Index extends Component {
                                 onClick={e => {
                                     this.props.history.push({
                                         pathname: "/Article",
-                                        state: item,
+                                        state: item.article,
                                     });
                                 }}
                             >
-                                {item.content.replace(/<.*?>/ig, "").substring(0, 200)}
+                                <Space>
+                                    <Avatar size="large" shape="square" src={item.author.profilePhoto} />
+                                    <div>
+                                        {
+                                            item.article.content.replace(/<.*?>/ig, "").substring(0, 200)
+                                        }
+                                    </div>
+                                </Space>
+                                <Divider />
+                                <Space>
+                                    <div>
+                                        {item.author.nickname}
+                                    </div>
+                                    <div>
+                                        {moment(item.article.deliverDate).format('YYYY-MM-DD HH:mm:ss')}
+                                    </div>
+                                </Space>
                             </Card>
                         )
                     }

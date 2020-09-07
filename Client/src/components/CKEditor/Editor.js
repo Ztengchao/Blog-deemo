@@ -37,7 +37,7 @@ export class Editor extends PureComponent {
         Axios.post("api/article/EditArticle", data)
             .then(res => {
                 if (res.data.success) {
-
+                    this.props.history.push("/");
                 } else {
                     message.error("保存失败：" + res.data.message);
                 }

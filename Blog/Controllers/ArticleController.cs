@@ -37,12 +37,17 @@ namespace Blog.Controllers
                 .Where(i => i.Title.Contains(searchTitle))
                 .Skip(index)
                 .Take(count)
+                .Select(i => new
+                {
+                    Article = i,
+                    Author = i.User,
+                })
                 .ToArray();
             return Ok(Result.Success(articles));
         }
 
         [HttpPost]
-        [Route("api/article/EditArticle")]
+        [Route("api/article/editArticle")]
         public ActionResult EditArticle([FromBody] Article article)
         {
             var userId = HttpContext.Session.GetInt32("userId");
@@ -85,7 +90,73 @@ namespace Blog.Controllers
                 return Ok(Result.Fail(e.Message));
             }
 
-            return Ok(article);
+            return Ok(Result.Success());
+        }
+
+        /// <summary>
+        /// 更改收藏文章状态
+        /// </summary>
+        /// <param name="starArticle"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("api/article/changeStar")]
+        public ActionResult ChangeStar([FromBody] StarArticle starArticle)
+        {
+            var userId = HttpContext.Session.GetInt32("userId");
+            if (userId == null || userId != starArticle.UserId)
+            {
+                return Ok(Result.Fail("登录信息已过期"));
+            }
+            var article = _blogDataContext.Article.Find(starArticle.ArticleId);
+            if (article == null)
+            {
+                return Ok(Result.Fail("未找到关注的文章"));
+            }
+
+            starArticle.StarDate = DateTime.Now;
+            var old = _blogDataContext.StarArticle.Find(starArticle.UserId, starArticle.ArticleId);
+            if (old != null)
+            {
+                //已经关注，取消关注
+                _blogDataContext.Remove(old);
+                article.LoveCount--;
+            }
+            else
+            {
+                _blogDataContext.Add(starArticle);
+                article.LoveCount++;
+            }
+
+            try
+            {
+                _blogDataContext.SaveChanges();
+            }
+            catch
+            {
+                return Ok(Result.Fail("修改失败"));
+                throw;
+            }
+
+            return Ok(Result.Success("修改成功"));
+        }
+
+        [HttpGet]
+        [Route("api/article/isStar")]
+        public ActionResult IsStar(int articleId)
+        {
+            var userId = HttpContext.Session.GetInt32("userId");
+            if (userId == null)
+            {
+                userId = 0;
+            }
+
+            var starArticle = _blogDataContext.StarArticle.Find(userId, articleId);
+            if (starArticle == null)
+            {
+                return Ok(Result.Fail());
+            }
+
+            return Ok(Result.Success());
         }
     }
 }

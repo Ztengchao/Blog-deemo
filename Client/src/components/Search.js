@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import { MyInfiniteScroll } from './Data/MyInfiniteScroll';
 import Axios from 'axios';
-import { Card } from 'antd';
+import { Card, Space, Avatar, Divider } from 'antd';
+import moment from 'moment';
 
 export class Search extends Component {
 
     constructor(props) {
         super(props);
-        let title = document.getElementById("searchInput").value;
-        if (!title) {
-            props.history.replace("/");
-        }
-
         this.state = {
-            title: title,
+            title: "",
             data: [],
         }
+    }
+
+    componentDidMount() {
+        let title = document.getElementById("searchInput").value;
+        if (!title) {
+            this.props.history.replace("/");
+        }
+        this.setState({ title });
+
     }
 
 
@@ -35,9 +40,19 @@ export class Search extends Component {
             .catch(err => console.log(err));
     }
 
+
+    writeArticle = () => {
+        this.props.history.push({
+            pathname: "/Editor",
+            query: {
+            }
+        });
+    }
+
     render() {
         return (
             <MyInfiniteScroll
+                writeArticle={this.writeArticle}
                 loadData={this.requestData}
                 header={"\"" + this.state.title + "\" 搜索结果"}
                 renderItem={
@@ -45,16 +60,35 @@ export class Search extends Component {
                         return (
                             <Card hoverable
                                 title={
-                                    item.title
+                                    item.article.title
                                 }
                                 style={{
                                     marginTop: "20px"
                                 }}
                                 onClick={e => {
-                                    this.props.history.push("./editor");
+                                    this.props.history.push({
+                                        pathname: "/Article",
+                                        state: item.article,
+                                    });
                                 }}
                             >
-                                {item.content.replace(/<.*?>/ig, "").substring(0, 200)}
+                                <Space>
+                                    <div>
+                                        <Avatar size="large" shape="square" src={item.author.profilePhoto} />
+                                        <div>
+                                            {item.article.content.replace(/<.*?>/ig, "").substring(0, 200)}
+                                        </div>
+                                    </div>
+                                </Space>
+                                <Divider />
+                                <Space>
+                                    <div>
+                                        {item.author.nickname}
+                                    </div>
+                                    <div>
+                                        {moment(item.article.deliverDate).format('YYYY-MM-DD HH:mm:ss')}
+                                    </div>
+                                </Space>
                             </Card>
                         )
                     }

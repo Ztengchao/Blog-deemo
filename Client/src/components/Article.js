@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import cookie from 'react-cookies'
 import Axios from 'axios';
+import { StarOutlined, StarFilled } from '@ant-design/icons';
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
@@ -31,6 +32,8 @@ export class Article extends Component {
             value: "",
             pageNow: 1,
             pageSize: 10,
+            stared: false,
+            straing: false,
         }
     }
 
@@ -38,6 +41,7 @@ export class Article extends Component {
         document.getElementById("title").innerHTML = this.state.data.title;
         document.getElementById("content").innerHTML = this.state.data.content;
         this.pageOnChange(1, 10);
+        this.isStar();
     }
 
     pageOnChange = (page, pageSize) => {
@@ -95,6 +99,43 @@ export class Article extends Component {
         })
     };
 
+    isStar = () => {
+        if (cookie.load("userInfo") == undefined) {
+            this.setState({
+                stared: false,
+            });
+        }
+        Axios.get("api/article/isStar?articleId=" + this.state.data.id)
+            .then(res => {
+                this.setState({
+                    stared: res.data.success,
+                });
+            }).catch(err => {
+            });
+    }
+
+    hangdleChangeStar = () => {
+
+        if (cookie.load("userInfo") == undefined) {
+            message.error("请先登录");
+        }
+
+        this.setState({ straing: true });
+        Axios.post("api/article/changeStar", {
+            userId: cookie.load("userInfo").userId,
+            articleId: this.state.data.id,
+        }).then(res => {
+            if (res.data.success) {
+                this.isStar();
+            } else {
+                message.error("更改失败：" + res.data.message);
+            }
+        }).catch(err => {
+            message.error("更改失败");
+        });
+        this.setState({ straing: false });
+    }
+
     handleChange = e => {
         this.setState({
             value: e.target.value,
@@ -114,6 +155,13 @@ export class Article extends Component {
             <div style={{ marginBottom: "200px" }}>
                 <Typography>
                     <Title id="title" />
+                    <Button onClick={this.hangdleChangeStar} disabled={this.state.straing}>
+                        {
+                            this.state.stared ?
+                                <StarFilled style={{ color: "red" }} /> :
+                                <StarOutlined style={{ color: "red" }} />
+                        }
+                    </Button>
                     <Divider />
                     <Text style={{ marginTop: "30px" }} id="content" />
                 </Typography>

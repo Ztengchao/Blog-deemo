@@ -18,7 +18,9 @@ namespace Blog.Models
         public int Id { get; set; }
         public string Nickname { get; set; }
         public string Username { get; set; }
+        [JsonIgnore]
         public string PasswordHash { get; set; }
+        [JsonIgnore]
         public Guid Salt { get; set; }
         public string ProfilePhoto { get; set; }
 
