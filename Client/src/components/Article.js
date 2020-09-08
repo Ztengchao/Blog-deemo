@@ -71,6 +71,10 @@ export class Article extends Component {
         if (!this.state.value) {
             return;
         }
+        if (cookie.load("userInfo") == undefined) {
+            message.error("请先登录");
+            return;
+        }
 
         this.setState({
             submitting: true,
@@ -203,7 +207,7 @@ export class Article extends Component {
                     avatar={
                         <Avatar
                             src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                            alt={cookie.load("userInfo").name}
+                            alt={cookie.load("userInfo") == undefined ? "" : cookie.load("userInfo").name}
                         />
                     }
                     content={

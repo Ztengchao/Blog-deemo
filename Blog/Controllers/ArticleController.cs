@@ -65,7 +65,7 @@ namespace Blog.Controllers
             article.UserId = userId.Value;
             if (article.Id == 0)
             {
-                //id为-1是添加文章
+                //id为0是添加文章
                 article.DeliverTime = DateTime.Now;
                 _blogDataContext.Add(article);
             }
